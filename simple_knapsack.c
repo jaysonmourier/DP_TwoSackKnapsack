@@ -1,6 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
+
+#ifndef __WIN32__
+// sys/time.h n'est pas disponible sur windows
 #include <sys/time.h>
+#endif
 
 // Pour simplifier la comparaison, j'utilise une directive de préprocesseur
 #define MAX(x, y) (((x) > (y)) ? (x) : (y))
@@ -21,14 +25,21 @@ int main(void)
     // Le nombre d'objets, calculé dynamiquement
     int N = sizeof(pt) / sizeof(pt[0]);
 
+    #ifndef __WIN32__
     // Calculer le temps d'exécution de la fonction simple_knapsack
     struct timeval t1, t2;
     double elapsed_time;
 
     gettimeofday(&t1, NULL);
+    #endif
+
     int *K = simple_knapsack(P, wt, pt, N);
+
+    #ifndef __WIN32__
     gettimeofday(&t2, NULL);
     elapsed_time = (t2.tv_sec - t1.tv_sec) + (t2.tv_usec - t1.tv_usec) / 1000000.0;
+    #endif
+
     if(K == NULL) return 1;
 
     // On affiche la matrice résultante de simple_knapsack
@@ -43,7 +54,10 @@ int main(void)
 
     printf("the best value is : %d\n", *(K + P + N * (P + 1)));
     printf("n_op = %d\n", n_op);
+
+    #ifndef __WIN32__
     printf("elapsed time : %f\n", elapsed_time);
+    #endif
     
     free(K);
     return 0;
