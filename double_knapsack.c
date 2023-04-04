@@ -3,10 +3,6 @@
 
 #define MAX(x, y) (((x) > (y)) ? (x) : (y))
 
-#define N 5
-#define M 5
-#define Z 3
-
 typedef struct {
     int n;
     int m;
