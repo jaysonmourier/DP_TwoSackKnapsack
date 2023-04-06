@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #define MAX(x, y) (((x) > (y)) ? (x) : (y))
 
@@ -20,21 +21,51 @@ void print_3D(Cube *c);
 Cube *max_value_two_sacks(int *values, int *weights, int n, int capacity1, int capacity2, int *result);
 void find_items_in_sacks(Cube *dp, int *weights, int *values, int n, int capacity1, int capacity2, int *sack1, int *sack2, int *sack1_count, int *sack2_count);
 
+void random_objects(int n, int a, int b, int weights[n], int values[n]);
 
 int
-main(void)
+main(int argc, char **argv)
 {
-    int values[] = {30, 20, 5, 27, 4, 40, 7, 8, 14};
-    int weights[] = {3, 1, 4, 3, 2, 5, 1, 4, 2};
-    int n = sizeof(values) / sizeof(values[0]);
-    int capacity1 = 6;
-    int capacity2 = 9;
+
+    --argc, ++argv;
+
+    if(argc != 5)
+    {
+        fprintf(stderr, "./double.out n_objects size1 size2 min max\n");
+        exit(1);
+    }
+
+    int n = atoi(*argv);
+    int s1 = atoi(*(++argv));
+    int s2 = atoi(*(++argv));
+    int a = atoi(*(++argv));
+    int b = atoi(*(++argv));
+
+    srand(time(NULL));
+
+    int *values = (int*) calloc(n, sizeof(int));
+    int *weights = (int*) calloc(n, sizeof(int));;
+
+    random_objects(n, a, b, values, weights);
+
+    int capacity1 = s1;
+    int capacity2 = s2;
 
     int result = 0;
     
     Cube *c = max_value_two_sacks(values, weights, n, capacity1, capacity2, &result);
 
-    print_3D(c);    
+    //print_3D(c);    
+
+    for(int i = 0; i < n; i++)
+        fprintf(stdout, "%3d ", values[i]);
+
+    putchar('\n');
+
+    for(int i = 0; i < n; i++)
+        fprintf(stdout, "%3d ", weights[i]);
+
+    putchar('\n');
 
     printf("Le poids total des objets sélectionnés dans les deux sacs est : %d\n", result);
 
@@ -44,20 +75,23 @@ main(void)
 
     find_items_in_sacks(c, weights, values, n, capacity1, capacity2, sack1, sack2, &sack1_count, &sack2_count);
 
-    printf("Objets dans le sac 1 : ");
+    printf("Objets dans le sac 1 (taille initiale: %3d) : ", s1);
     for (int i = 0; i < sack1_count; ++i)
     {
-        printf("%d ", sack1[i] + 1);
+        printf("%3d ", sack1[i] + 1);
     }
     printf("\n");
 
-    printf("Objets dans le sac 2 : ");
+    printf("Objets dans le sac 2 (taille initiale: %3d) : ", s2);
     for (int i = 0; i < sack2_count; ++i)
     {
-        printf("%d ", sack2[i] + 1);
+        printf("%3d ", sack2[i] + 1);
     }
     printf("\n");
 
+    free(values);
+    free(weights);
+    free(c);
 
     return 0;
 }
@@ -175,5 +209,14 @@ void find_items_in_sacks(Cube *dp, int *weights, int *values, int n, int capacit
             k -= weights[i - 1];
         }
         i--;
+    }
+}
+
+void random_objects(int n, int a, int b, int weights[n], int values[n])
+{
+    for(int i = 0; i < n; ++i)
+    { 
+        values[i] = (rand() % b) + a;
+        weights[i] = (rand() % b) + a;
     }
 }
