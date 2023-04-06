@@ -56,15 +56,21 @@ main(int argc, char **argv)
     Cube *c = max_value_two_sacks(values, weights, n, capacity1, capacity2, &result);
 
     //print_3D(c);    
+    
+    printf("n = %d\n", n);
 
+    printf("values: ");
     for(int i = 0; i < n; i++)
-        fprintf(stdout, "%3d ", values[i]);
+        fprintf(stdout, "%d, ", values[i]);
 
     putchar('\n');
+    putchar('\n');
 
+    printf("weights: ");
     for(int i = 0; i < n; i++)
-        fprintf(stdout, "%3d ", weights[i]);
+        fprintf(stdout, "%d, ", weights[i]);
 
+    putchar('\n');
     putchar('\n');
 
     printf("Le poids total des objets sélectionnés dans les deux sacs est : %d\n", result);
@@ -78,14 +84,14 @@ main(int argc, char **argv)
     printf("Objets dans le sac 1 (taille initiale: %3d) : ", s1);
     for (int i = 0; i < sack1_count; ++i)
     {
-        printf("%3d ", sack1[i] + 1);
+        printf("%d, ", sack1[i] + 1);
     }
     printf("\n");
 
     printf("Objets dans le sac 2 (taille initiale: %3d) : ", s2);
     for (int i = 0; i < sack2_count; ++i)
     {
-        printf("%3d ", sack2[i] + 1);
+        printf("%d, ", sack2[i] + 1);
     }
     printf("\n");
 
