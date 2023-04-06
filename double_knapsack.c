@@ -1,3 +1,5 @@
+// https://developers.google.com/optimization/pack/multiple_knapsack?hl=fr#python
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -20,11 +22,11 @@ Cube *max_value_two_sacks(int *values, int *weights, int n, int capacity1, int c
 int
 main(void)
 {
-    int values[] = {60, 100, 120, 70, 80};
-    int weights[] = {10, 20, 30, 40, 50};
+    int values[] = {48, 30, 120};
+    int weights[] = {10, 30, 1};
     int n = sizeof(values) / sizeof(values[0]);
     int capacity1 = 10;
-    int capacity2 = 20;
+    int capacity2 = 30;
 
     int result = 0;
     
@@ -32,7 +34,7 @@ main(void)
 
     print_3D(c);    
 
-    printf("La valeur maximale que l'on peut transporter dans les deux sacs est : %d\n", result);
+    printf("Le poids total des objets sélectionnés dans les deux sacs est : %d\n", result);
 
     return 0;
 }
@@ -102,12 +104,24 @@ Cube *max_value_two_sacks(int *values, int *weights, int n, int capacity1, int c
         {
             for (int k = 0; k <= capacity2; ++k)
             {
-                int value_without_item = get(dp, i - 1, j, k);
-                int value_with_item_in_sack1 = (j >= weights[i - 1]) ? get(dp, i - 1, j - weights[i - 1], k) + values[i - 1] : 0;
-                int value_with_item_in_sack2 = (k >= weights[i - 1]) ? get(dp, i - 1, j, k - weights[i - 1]) + values[i - 1] : 0;
-                
-                int max_value = MAX(MAX(value_without_item, value_with_item_in_sack1), value_with_item_in_sack2);
-                set(dp, max_value, i, j, k);
+                if (weights[i - 1] <= j && weights[i - 1] <= k)
+                {
+                    set(dp, MAX(get(dp, i - 1, j, k), 
+                                MAX(values[i - 1] + get(dp, i - 1, j - weights[i - 1], k), 
+                                    values[i - 1] + get(dp, i - 1, j, k - weights[i - 1]))), i, j, k);
+                }
+                else if (weights[i - 1] <= j)
+                {
+                    set(dp, MAX(get(dp, i - 1, j, k), values[i - 1] + get(dp, i - 1, j - weights[i - 1], k)), i, j, k);
+                }
+                else if (weights[i - 1] <= k)
+                {
+                    set(dp, MAX(get(dp, i - 1, j, k), values[i - 1] + get(dp, i - 1, j, k - weights[i - 1])), i, j, k);
+                }
+                else
+                {
+                    set(dp, get(dp, i - 1, j, k), i, j, k);
+                }
             }
         }
     }
