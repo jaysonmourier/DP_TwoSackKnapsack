@@ -1,5 +1,3 @@
-// https://developers.google.com/optimization/pack/multiple_knapsack?hl=fr#python
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
