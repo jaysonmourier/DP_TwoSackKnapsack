@@ -18,15 +18,17 @@ int get(Cube *c, int i, int j, int k);
 void print_3D(Cube *c);
 
 Cube *max_value_two_sacks(int *values, int *weights, int n, int capacity1, int capacity2, int *result);
+void find_items_in_sacks(Cube *dp, int *weights, int *values, int n, int capacity1, int capacity2, int *sack1, int *sack2, int *sack1_count, int *sack2_count);
+
 
 int
 main(void)
 {
-    int values[] = {48, 30, 120};
-    int weights[] = {10, 30, 1};
+    int values[] = {30, 20, 5, 27, 4, 40, 7, 8, 14};
+    int weights[] = {3, 1, 4, 3, 2, 5, 1, 4, 2};
     int n = sizeof(values) / sizeof(values[0]);
-    int capacity1 = 10;
-    int capacity2 = 30;
+    int capacity1 = 6;
+    int capacity2 = 9;
 
     int result = 0;
     
@@ -35,6 +37,27 @@ main(void)
     print_3D(c);    
 
     printf("Le poids total des objets sélectionnés dans les deux sacs est : %d\n", result);
+
+    int sack1[n];
+    int sack2[n];
+    int sack1_count, sack2_count;
+
+    find_items_in_sacks(c, weights, values, n, capacity1, capacity2, sack1, sack2, &sack1_count, &sack2_count);
+
+    printf("Objets dans le sac 1 : ");
+    for (int i = 0; i < sack1_count; ++i)
+    {
+        printf("%d ", sack1[i] + 1);
+    }
+    printf("\n");
+
+    printf("Objets dans le sac 2 : ");
+    for (int i = 0; i < sack2_count; ++i)
+    {
+        printf("%d ", sack2[i] + 1);
+    }
+    printf("\n");
+
 
     return 0;
 }
@@ -129,4 +152,28 @@ Cube *max_value_two_sacks(int *values, int *weights, int n, int capacity1, int c
     *result = get(dp, n, capacity1, capacity2);
 
     return dp;
+}
+
+void find_items_in_sacks(Cube *dp, int *weights, int *values, int n, int capacity1, int capacity2, int *sack1, int *sack2, int *sack1_count, int *sack2_count)
+{
+    int i = n;
+    int j = capacity1;
+    int k = capacity2;
+    *sack1_count = 0;
+    *sack2_count = 0;
+
+    while (i > 0 && (j > 0 || k > 0))
+    {
+        if (weights[i - 1] <= j && get(dp, i - 1, j - weights[i - 1], k) + values[i - 1] == get(dp, i, j, k))
+        {
+            sack1[(*sack1_count)++] = i - 1;
+            j -= weights[i - 1];
+        }
+        else if (weights[i - 1] <= k && get(dp, i - 1, j, k - weights[i - 1]) + values[i - 1] == get(dp, i, j, k))
+        {
+            sack2[(*sack2_count)++] = i - 1;
+            k -= weights[i - 1];
+        }
+        i--;
+    }
 }
